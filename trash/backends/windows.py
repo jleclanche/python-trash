@@ -3,7 +3,7 @@
 Windows Trash implementation
 """
 
-from .base import BaseMime
+from .base import BaseTrash
 
 class Trash(BaseTrash):
 	pass
