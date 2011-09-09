@@ -1,0 +1,6 @@
+trash/__init__.py
+trash/backends/__init__.py
+trash/backends/base.py
+trash/backends/xdg.py
+trash/backends/windows.py
+setup.py
