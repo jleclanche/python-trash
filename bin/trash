@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+from argparse import ArgumentParser
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.path.pardir))
+from trash import Trash
+
+class TrashManager(object):
+	def __init__(self, args):
+		arguments = ArgumentParser(prog="trash")
+		arguments.add_argument("--empty", action="store_true", dest="empty", help="empty the trash")
+		arguments.add_argument("--list", action="store_true", dest="list", help="list files in the trash")
+		arguments.add_argument("files", nargs="*")
+		self.args = arguments.parse_args(args)
+
+	def exec_(self):
+		trash = Trash()
+		if self.args.list:
+			for file in trash.files():
+				print(file)
+			return 0
+
+		if self.args.empty:
+			if trash.isEmpty():
+				self.error("Trash is already empty")
+				return 1
+			print "emptying"
+			trash.empty()
+			print "empty"
+			return 0
+
+		if not self.args.files:
+			self.error("missing operand")
+
+		error = 0
+		for file in self.args.files:
+			path = os.path.abspath(file)
+			try:
+				trash.trash(path)
+			except Exception, e:
+				self.error("cannot move %r to trash: %s" % (file, e))
+				error = 1
+				raise
+		return error
+
+	def error(self, message):
+		sys.stderr.write("trash: %s\n" % (message))
+
+def main():
+	import signal
+	signal.signal(signal.SIGINT, signal.SIG_DFL)
+	app = TrashManager(sys.argv[1:])
+	sys.exit(app.exec_())
+
+if __name__ == "__main__":
+	main()
