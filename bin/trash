@@ -26,9 +26,7 @@ class TrashManager(object):
 			if trash.isEmpty():
 				self.error("Trash is already empty")
 				return 1
-			print "emptying"
 			trash.empty()
-			print "empty"
 			return 0
 
 		if not self.args.files:
