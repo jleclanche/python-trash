@@ -22,6 +22,9 @@ class Trash(BaseTrash):
 			path = os.path.join(XDG_DATA_HOME, "Trash")
 		self._path = path
 
+	def __contains__(self, item):
+		return item in self.files()
+
 	def __len__(self):
 		return len(self.files())
 
@@ -43,6 +46,11 @@ class Trash(BaseTrash):
 		with open(os.path.join(self.infoPath(), name + ".trashinfo"), "w") as f:
 			f.write(TRASH_INFO_TEMPLATE % {"path": path, "deletionDate": deletionDate})
 		return f.name
+
+	def delete(self, name):
+		if name not in self:
+			raise KeyError(name)
+		self._cleanup(name)
 
 	def empty(self):
 		for file in self.files():
