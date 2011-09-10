@@ -29,15 +29,26 @@ class Trash(BaseTrash):
 		return len(self.files())
 
 	def _cleanup(self, name):
+		"""
+		Deletes the file \a name and its associated metadata
+		from the trash if it exists
+		"""
 		self._deleteInfo(name)
 		self._deleteFile(name)
 
 	def _deleteFile(self, name):
+		"""
+		Deletes the file \a name from the trash if it exists
+		"""
 		path = os.path.join(self.filesPath(), name)
 		if os.path.exists(path):
 			os.remove(path)
 
 	def _deleteInfo(self, name):
+		"""
+		Deletes the metadata associated with the file
+		\a name from the trash if it exists
+		"""
 		path = os.path.join(self.infoPath(), name + ".trashinfo")
 		if os.path.exists(path):
 			os.remove(path)
@@ -48,27 +59,50 @@ class Trash(BaseTrash):
 		return f.name
 
 	def delete(self, name):
+		"""
+		Deletes the file \a name from the trash
+		Raises a KeyError if the file is not in the trash
+		"""
 		if name not in self:
 			raise KeyError(name)
 		self._cleanup(name)
 
 	def empty(self):
+		"""
+		Empties the trash
+		"""
 		for file in self.files():
 			self.delete(file)
 
 	def files(self):
+		"""
+		Returns a list of file names in the trash
+		"""
 		return os.listdir(self.filesPath())
 
 	def filesPath(self):
+		"""
+		Returns the path to the files directory for the trash
+		"""
 		return os.path.join(self.path(), "files")
 
 	def infoPath(self):
+		"""
+		Returns the path to the info directory for the trash
+		"""
 		return os.path.join(self.path(), "info")
 
 	def isEmpty(self):
+		"""
+		Returns True if the trash is empty; otherwise returns False
+		"""
 		return len(self) == 0
 
 	def trash(self, path):
+		"""
+		Moves the file at \a path to the trash
+		Raises an IOError if the file does not exist
+		"""
 		if not os.path.exists(path):
 			raise IOError("No such file or directory")
 
@@ -89,4 +123,9 @@ class Trash(BaseTrash):
 			raise
 
 	def path(self):
+		"""
+		Returns the path to the trash
+		Note that this is the path to the actual trash, not the directory
+		containing the files. For that, use filesPath()
+		"""
 		return self._path
