@@ -33,8 +33,8 @@ class Trash(BaseTrash):
 		Deletes the file \a name and its associated metadata
 		from the trash if it exists
 		"""
-		self._deleteInfo(name)
 		self._deleteFile(name)
+		self._deleteInfo(name)
 
 	def _deleteFile(self, name):
 		"""
